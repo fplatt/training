@@ -1,4 +1,4 @@
-node.js
+#node.js
 
 apt-get install g++ libssl-dev curl
 curl http://nodejs.org/dist/v0.5.10/node-v0.5.10.tar.gz
@@ -11,20 +11,20 @@ make install
 
 
 
-mongodb
+#mongodb
 
 apt-get install mongodb
 
 
 
 
-npm
+#npm
 
 curl http://npmjs.org/install.sh | sh
 
 
 
-node_modules
+#node_modules
 
 npm install -g express
 npm install -g jade
@@ -34,7 +34,7 @@ npm install -g mongodb
 
 
 
-npm install dir und node moduledir verlinken
+#npm install dir und node moduledir verlinken
 
 cp -r /usr/local/lib/node/* /usr/local/lib/node_modules
 rm -r /usr/local/lib/node
