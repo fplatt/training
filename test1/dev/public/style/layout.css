@@ -1,0 +1,57 @@
+#menuWrapper {
+    overflow: hidden;
+    width: 100%;
+}
+#menu {
+    margin: 0 auto;
+    padding-bottom: 1em;
+    padding-top: 1em;
+    width: 1250px;
+}
+#headerWrapper {
+    margin-bottom: 6em;
+    overflow: hidden;
+    width: 100%;
+}
+#headerContent {
+    margin: 0 auto;
+    width: 1250px;
+}
+#contentWrapper {
+    margin: 3em auto;
+    overflow: hidden;
+    width: 1250px;
+}
+#mainContent {
+    float: left;
+    width: 900px;
+}
+#mainContent h2 {
+    margin: 0 auto;
+    width: 640px;
+}
+#video {
+    height: 360px;
+    margin: 2em auto;
+    width: 640px;
+}
+#sidebar {
+    border-left: 1px solid lightgray;
+    float: left;
+    padding-left: 2em;
+    width: 260px;
+}
+#footerWrapper {
+    margin-top: 3em;
+    overflow: hidden;
+    padding-bottom: 4em;
+    padding-top: 1em;
+    width: 100%;
+}
+#footerContent {
+    margin: 0 auto;
+    width: 1250px;
+}
+.clear {
+    clear: both;
+}

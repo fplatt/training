@@ -1,0 +1,35 @@
+#!/bin/bash
+
+echo cleaning up
+if test -e deploy 
+then
+    rm -r deploy
+fi
+
+
+if [ "$1" == "" ]
+then
+    mkdir deploy
+
+    echo copying files
+    cp -r dev/* deploy
+
+
+    echo compiling scripts
+    for JSFILE in `find deploy -name "*.coffee"` 
+    do
+        coffee --compile ${JSFILE}
+        rm ${JSFILE}
+    done
+
+
+    echo compiling styles
+    for STYLFILE in `find deploy -name "*.styl"` 
+    do
+        CSSFILE=${STYLFILE:0:(${#STYLFILE}-4)}css
+        stylus --compress < ${STYLFILE} > ${CSSFILE}
+        rm ${STYLFILE}
+    done
+
+    echo build complete
+fi
