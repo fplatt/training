@@ -1,7 +1,14 @@
 express = require( 'express' )
 routes = require( './routes' )
+fs = require( 'fs' )
 
-app = express.createServer()
+
+options=
+    key: fs.readFileSync( '../../../server.key' )
+    cert: fs.readFileSync( '../../../server.crt' )
+    
+
+app = express.createServer( options )
 
 
 
@@ -16,17 +23,17 @@ app.configure( ->
     app.use( express.session( { secret : 'your secret here' } ) )
     app.use( app.router )
     app.use( express.static( __dirname + '/public' ) )
-  )
+)
 
 
 app.configure( 'development' , ->
     app.use( express.errorHandler( { dumpExceptions : true, showStack : true } ) )
-  )
+)
 
 
 app.configure('production' , ->
     app.use( express.errorHandler() )
-  )
+)
 
 
 
@@ -34,5 +41,8 @@ app.configure('production' , ->
 
 app.get( '/', routes.index )
 
-app.listen( 3000 )
+app.listen( 443 )
 console.log( "Express server listening on port %d in %s mode" , app.address().port , app.settings.env )
+
+
+require( './testing/user-test' )
