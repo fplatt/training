@@ -1,56 +1,74 @@
 mongo = require( "mongodb" )
 
 
-srv = new mongo.Server( 'localhost' , 27017 , {} )
+srv = new mongo.Server( '192.168.1.4' , 27017 , {} )
 db = new mongo.Db( 'trainingdb' , srv , {} )
 
-dbReady = false
+# whether the db is ready to receive queries
+# if not, the query gets stored in storageReqs for later execution
+dbReady = false 
+# whether a request to close the db is received
+# in this case all new queries throw an Error
+dbcloseRequested = false
 storageReqs = []
 
 
-db.open( ->
-    i() for i in storageReqs
-    storageReqs = []
-)
 
+exports.open = ->
+    db.open( ->
+        i() for i in storageReqs
+        dbReady = true
+    )
+    
+    
 
-
-exports.storeObject = ( classname , data , cb ) ->
-    if dbReady
+exports.saveObject = ( classname , data , cb ) ->
+    if dbcloseRequested is true
+        throw new Error( 'Database close was issued before. No Queries are accepted.' )
+    
+    update = ->
         db.collection( classname.toLowerCase() + 's' , ( err , collection ) ->
-            collection.insert( data , ->
-                cb() if cb?
-            )
+            if cb
+                collection.update( { loginname : data.loginname } , { $set : data } , { save : true , upsert : true } , cb )
+            else
+                collection.update( { loginname : data.loginname } , { $set : data } , { upsert : true } )
         )
+    
+    if dbReady
+        update()
     else
-        storageReqs.push( ->
-            db.collection( classname.toLowerCase() + 's' , ( err , collection ) ->
-                collection.insert( data , ->
-                    cb() if cb?
-                )
-            )
-        )
+        storageReqs.push( update )
     
     
     
 exports.loadObject = ( classname , filter , cb ) ->
+    if dbcloseRequested is true
+        throw new Error( 'Database close was issued before. No Queries are accepted.' )
     if not cb
         throw new Error( 'no Callback given for loadObject' )
         
-        
-    if dbReady
+    load = ->
         db.collection( classname.toLowerCase() + 's' , ( err , collection ) ->
-            cursor = collection.find( filter )
+            cursor = collection.find( filter ).limit(1)
             cursor.nextObject( ( err , obj ) ->
                 cb( err , obj )
             )
         )
+        
+    if dbReady
+        load()
     else
-        storageReqs.push( ->
-            db.collection( classname.toLowerCase() + 's' , ( err , collection ) ->
-                cursor = collection.find( filter )
-                cursor.nextObject( ( err , obj ) ->
-                    cb( err , obj )
-                )
-            )
-        )
+        storageReqs.push( load )
+        
+
+
+exports.close = ->
+    dbCloseRequested = true
+    
+    closeDb = ->
+        db.close()
+    
+    if dbReady and storageReqs.length is 0
+        closeDb()
+    else
+        storageReqs.push( closeDb )

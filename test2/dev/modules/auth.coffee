@@ -26,20 +26,21 @@ class User
     constructor: ( loginname , cb ) ->
         if loginname
             @loginname = loginname
+            self = this
             
             storage.loadObject( 'User' , { loginname : loginname } , ( err , data ) ->
-                @loaded = true
                 if data
-                    this[prop] = data.prop for prop in data
-                cb() if cb?
+                    self[prop] = data[prop] for prop of data
+                if cb?
+                    cb()
             )
 
 
     setFirstname : (name) ->
-        @name = name
+        @firstname = name
 
     getFirstname : ->
-        return @name if @name?
+        return @firstname if @firstname?
 
 
     setLastname : (lastname) ->
@@ -72,19 +73,18 @@ class User
         
         
     save : ( cb ) ->
-        ret= 
+        data= 
             firstname: this.firstname
             lastname: this.lastname
             loginname: this.loginname
             mail: this.mail
             password: this.password
             salt: this.salt
-            classname: 'User'
-            
-        if cb
-            storage.storeObject( 'user' , ret , cb )
+               
+        if cb?
+            storage.saveObject( 'User' , data , cb )
         else
-            storage.storeObject( 'user' , ret )
+            storage.saveObject( 'User' , data )
 
 
 
@@ -93,4 +93,5 @@ exports.createUser = ( loginname , cb ) ->
         return new User( loginname , cb )
     else if loginname
         return new User( loginname )
-    else return new User
+    else
+        return new User
