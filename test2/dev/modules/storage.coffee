@@ -22,16 +22,16 @@ exports.open = ->
     
     
 
-exports.saveObject = ( classname , data , cb ) ->
+exports.saveObject = ( classname , keyAttribute , data , cb ) ->
     if dbcloseRequested is true
-        throw new Error( 'Database close was issued before. No Queries are accepted.' )
+        throw new Error( 'Database close was issued before. No new Queries are accepted.' )
     
     update = ->
         db.collection( classname.toLowerCase() + 's' , ( err , collection ) ->
             if cb
-                collection.update( { loginname : data.loginname } , { $set : data } , { save : true , upsert : true } , cb )
+                collection.update( { keyAttribute : data[keyAttribute] } , { $set : data } , { save : true , upsert : true } , cb )
             else
-                collection.update( { loginname : data.loginname } , { $set : data } , { upsert : true } )
+                collection.update( { keyAttribute : data[keyAttribute] } , { $set : data } , { upsert : true } )
         )
     
     if dbReady
@@ -43,7 +43,7 @@ exports.saveObject = ( classname , data , cb ) ->
     
 exports.loadObject = ( classname , filter , cb ) ->
     if dbcloseRequested is true
-        throw new Error( 'Database close was issued before. No Queries are accepted.' )
+        throw new Error( 'Database close was issued before. No new Queries are accepted.' )
     if not cb
         throw new Error( 'no Callback given for loadObject' )
         

@@ -64,7 +64,7 @@ class User
         return @loginname if @loginname?
 
 
-    checkPassword : (password) ->
+    checkPassword : ( password ) ->
         return @password && @salt && @password == createPasswordHash( password , @salt )
 
     setPassword : ( password ) ->
@@ -72,19 +72,26 @@ class User
         @password = createPasswordHash( password , @salt )
         
         
+    getGroupId: ->
+        return @groupId if @groupId?
+    
+    setGroupId: ( id ) ->
+        @groupId = groupId
+        
+        
     save : ( cb ) ->
         data= 
-            firstname: this.firstname
-            lastname: this.lastname
-            loginname: this.loginname
-            mail: this.mail
-            password: this.password
-            salt: this.salt
+            firstname: getFirstname()
+            lastname: getLastname()
+            loginname: getLoginname()
+            mail: getMail()
+            password: @password
+            salt: @salt
                
         if cb?
-            storage.saveObject( 'User' , data , cb )
+            storage.saveObject( 'User' , 'loginname' , data , cb )
         else
-            storage.saveObject( 'User' , data )
+            storage.saveObject( 'User' , 'loginname' , data )
 
 
 
