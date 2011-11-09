@@ -71,27 +71,63 @@ class User
         @salt = createRandomString( 40 )
         @password = createPasswordHash( password , @salt )
         
-        
-    getGroupId: ->
-        return @groupId if @groupId?
+
+	addCapability: ( cap ) ->
+		@capability.addCapability( cap )
     
-    setGroupId: ( id ) ->
-        @groupId = groupId
+	getCapability: ->
+        return @capability if @capability?
+    
+    setCapability: ( caps ) ->
+		if caps.setName? and caps.getName? and caps.addCapability and caps.existCapability and caps.removeCapability
+        	@capability = capability
+
+	can: ( cap ) ->
+		if @capability and @capability.existCapability( cap )
+			return true
+		return false
         
         
     save : ( cb ) ->
-        data= 
+   			data= 
             firstname: getFirstname()
             lastname: getLastname()
             loginname: getLoginname()
             mail: getMail()
             password: @password
             salt: @salt
+			capability: @capability
                
         if cb?
             storage.saveObject( 'User' , 'loginname' , data , cb )
         else
             storage.saveObject( 'User' , 'loginname' , data )
+
+
+# Capability is a simple list of strings which describe what a user can do
+class Capability
+	constructor: () ->
+		@caps = []
+	
+	setName: ( name ) ->
+		@name = name
+		
+	getName: ->
+		return @name if @name?
+	
+	
+	addCapability: ( name ) ->
+		if not existCapability( name )
+			@caps.push( name )
+
+	existCapability: ( name ) ->
+		index = @caps.indexOf( name )
+		return index
+		
+	removeCapability: ( name ) ->
+		index = existCapability( name )
+		if index > -1
+			@caps.splice( index , 1 )
 
 
 
@@ -102,3 +138,21 @@ exports.createUser = ( loginname , cb ) ->
         return new User( loginname )
     else
         return new User
+
+
+exports.createCapability: () ->
+	cap = new Capability()
+	if arguments.length > 0
+		cap.setName( arguments[0] )
+	if arguments.length > 1
+		for i in [ 1..arguments.length ]
+			cap.addCapability( arguments[i] )
+
+	
+	
+exports.getCapabilityFrom: ( loginname , cb ) ->
+	user = exports.createUser( loginname , -> 
+		if cb?
+			cb( user.getCapability() )
+	)
+	
