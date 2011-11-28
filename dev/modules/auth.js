@@ -51,135 +51,138 @@ function User( loginname , cb ) {
 	else {
 		this.capability = new Capability();
 	}
-
-	this.setFirstname = function( name ) {
-		this.firstname = name;
-	};
-		
-	this.getFirstname = function() {
-		if( this.firstname ) {
-			return this.firstname;
-		}
-		return undefined;
-	};
-		
-	this.setLastname = function( lastname ) {
-		this.lastname = lastname;
-	};
-		
-	this.getLastname = function() {
-		if( this.lastname ) {
-			return this.lastname;
-		}
-		return undefined;
-	};
-		
-		
-	this.setMail = function( mail ) {
-		this.mail = mail;
-	};
-		
-	this.getMail = function() {
-		if( this.mail ) {
-			return this.mail;
-		}
-		return undefined;
-	};
-		
-	this.setLoginname = function( loginname ) {
-		this.loginname = loginname;
-	};
-		
-	this.getLoginname = function() {
-		if( this.loginname ) {
-			return this.loginname;
-		}
-		return undefined;
-	};
-		
-	this.checkPassword = function( password ) {
-		return this.password && this.salt && this.password == createPasswordHash( password , this.salt );
-	};
-		
-	this.setPassword = function( password ) {
-		this.salt = createRandomString( 40 );
-		this.password = createPasswordHash( password , this.salt );
-	};
-		
-		
-	this.addCapability = function( cap ) {
-		this.capability.addCapability( cap );
-	};
-		
-	this.getCapability =  function() {
-		if( this.capability ) {
-			return this.capability;
-		}
-		return undefined;
-	};
-		
-		
-	this.can = function( cap ) {
-		var result = false;
-		if( this.capability && this.capability.existCapability( cap ) ) {
-			result = true;
-		}
-		return result;
-	};
-		
-	this.save = function( cb ) {
-		var data = {
-			firstname: this.getFirstname(),
-			lastname: this.getLastname(),
-			loginname: this.getLoginname(),
-			mail: this.getMail(),
-			password: this.password,
-			salt: this.salt,
-			capability: this.capability
-		};
-		
-		if( cb && cb instanceof Function ) {
-			storage.saveObject( 'User' , 'loginname' , data , cb );
-		}
-		else {
-			storage.saveObject( 'User' , 'loginname' , data );
-		}
-	};
 }
+
+
+User.prototype.setFirstname = function( name ) {
+	this.firstname = name;
+};
+	
+User.prototype.getFirstname = function() {
+	if( this.firstname ) {
+		return this.firstname;
+	}
+	return undefined;
+};
+	
+User.prototype.setLastname = function( lastname ) {
+	this.lastname = lastname;
+};
+	
+User.prototype.getLastname = function() {
+	if( this.lastname ) {
+		return this.lastname;
+	}
+	return undefined;
+};
+	
+	
+User.prototype.setMail = function( mail ) {
+	this.mail = mail;
+};
+	
+User.prototype.getMail = function() {
+	if( this.mail ) {
+		return this.mail;
+	}
+	return undefined;
+};
+	
+User.prototype.setLoginname = function( loginname ) {
+	this.loginname = loginname;
+};
+	
+User.prototype.getLoginname = function() {
+	if( this.loginname ) {
+		return this.loginname;
+	}
+	return undefined;
+};
+	
+User.prototype.checkPassword = function( password ) {
+	return this.password && this.salt && this.password == createPasswordHash( password , this.salt );
+};
+	
+User.prototype.setPassword = function( password ) {
+	this.salt = createRandomString( 40 );
+	this.password = createPasswordHash( password , this.salt );
+};
+	
+	
+User.prototype.addCapability = function( cap ) {
+	this.capability.addCapability( cap );
+};
+	
+User.prototype.getCapability =  function() {
+	if( this.capability ) {
+		return this.capability;
+	}
+	return undefined;
+};
+	
+	
+User.prototype.can = function( cap ) {
+	var result = false;
+	if( this.capability && this.capability.existCapability( cap ) ) {
+		result = true;
+	}
+	return result;
+};
+	
+User.prototype.save = function( cb ) {
+	var data = {
+		firstname: this.getFirstname(),
+		lastname: this.getLastname(),
+		loginname: this.getLoginname(),
+		mail: this.getMail(),
+		password: this.password,
+		salt: this.salt,
+		capability: this.capability
+	};
+	
+	if( cb && cb instanceof Function ) {
+		storage.saveObject( 'User' , 'loginname' , data , cb );
+	}
+	else {
+		storage.saveObject( 'User' , 'loginname' , data );
+	}
+};
 
 // Capability is a simple list of strings which describe what a user can do
 function Capability() {
-	this.caps = {};
-	
-	this.setName = function( name ) {
-		this.name = name;
-	};
-		
-	this.getName = function() {
-		if( this.name ) {
-			return this.name;
-		}
-	};
-	
-	
-	this.addCapability = function( name ) {
-		if( !this.existCapability( name ) ) {
-			this.caps.push( name );
-		}
-	};
-
-	this.existCapability = function( name ) {
-		var index = this.caps.indexOf( name );
-		return index > -1;
-	};
-		
-	this.removeCapability = function( name ) {
-		var index = this.caps.indexOf( name );
-		if( index > -1 ) {
-			this.caps.splice( index , 1 );
-		}
-	};
 }
+
+Capability.prototype.caps = {};
+
+Capability.prototype.setName = function( name ) {
+	this.name = name;
+};
+	
+Capability.prototype.getName = function() {
+	if( this.name ) {
+		return this.name;
+	}
+};
+
+
+Capability.prototype.addCapability = function( name ) {
+	if( !this.existCapability( name ) ) {
+		this.caps.push( name );
+	}
+};
+
+Capability.prototype.existCapability = function( name ) {
+	var index = this.caps.indexOf( name );
+	return index > -1;
+};
+	
+Capability.prototype.removeCapability = function( name ) {
+	var index = this.caps.indexOf( name );
+	if( index > -1 ) {
+		this.caps.splice( index , 1 );
+	}
+};
+
 
 
 

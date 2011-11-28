@@ -21,15 +21,14 @@ function Tag( tagId , cb ) {
 			}
 		});
 	}
-			
-			
-	this.setName = function( name ) {
-		this.name = name;
-	};
-		
-	this.getName = function() {
-		if( this.name ) {
-			return this.name;
-		}
-	};
 }
+
+Tag.prototype.setName = function( name ) {
+	this.name = name;
+};
+	
+Tag.prototype.getName = function() {
+	if( this.name ) {
+		return this.name;
+	}
+};
