@@ -1,0 +1,5 @@
+cleaning up
+copying files
+compiling scripts
+compiling styles
+build complete

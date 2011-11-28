@@ -1,0 +1,45 @@
+#!/bin/bash
+
+echo setting up server environment
+
+echo getting software from debian repository
+
+apt-get install curl g++ libssl-dev mongodb
+
+
+
+echo installing node.js
+
+mkdir ~/downloads
+cd ~downloads
+
+curl http://nodejs.org/dist/v0.5.10/node-v0.5.10.tar.gz
+tar -xzf node-v0.5.10.tar.gz
+cd node-v0.5.10
+./configure
+make
+make install
+cd ..
+
+
+
+echo installing npm
+
+curl http://npmjs.org/install.sh | sh
+
+
+
+echo installing node.js modules
+
+npm install -g express
+npm install -g jade
+npm install -g stylus
+npm install -g mongodb
+
+
+
+echo correcting install dirs
+
+cp -r /usr/local/lib/node/* /usr/local/lib/node_modules
+rm -r /usr/local/lib/node
+ln -s /usr/local/lib/node_modules /usr/local/lib/node
